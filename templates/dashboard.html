@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Dashboard</title>
+</head>
+<body>
+
+    <h1>Restaurant Ordering System</h1>
+    <h2>Login Successful!</h2>
+
+    <p>Welcome! You are logged in.</p>
+
+    <form action="{{ url_for('logout') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Logout</button>
+    </form>
+
+</body>
+</html>
