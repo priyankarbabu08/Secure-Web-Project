@@ -9,6 +9,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///restaurant.db"
 # Initialize database
 db = SQLAlchemy(app)
 
+# Menu table
+class MenuItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+
+# Homepage
 @app.route("/")
 def home():
     return render_template("menu.html")
