@@ -2,8 +2,7 @@ from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required
-
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 app = Flask(__name__)
 import os
 
@@ -103,5 +102,32 @@ def logout():
 @login_required
 def dashboard():
     return render_template("dashboard.html")
+@app.route("/order/<int:item_id>", methods=["POST"])
+@login_required
+def place_order(item_id):
+    if current_user.role != "customer":
+        return "Access denied", 403
+
+    item = db.session.get(MenuItem, item_id)
+
+    if not item:
+        return "Food item not found", 404
+
+    quantity = request.form.get("quantity", type=int)
+
+    if quantity is None or not 1 <= quantity <= 10:
+        return "Invalid quantity", 400
+
+    new_order = Order(
+        user_id=current_user.id,
+        menu_item_id=item.id,
+        quantity=quantity,
+        total_price=round(item.price * quantity, 2)
+    )
+
+    db.session.add(new_order)
+    db.session.commit()
+
+    return "Order placed successfully!"
 if __name__ == "__main__":
     app.run(debug=True)

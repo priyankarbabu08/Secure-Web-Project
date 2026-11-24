@@ -10,10 +10,23 @@
     <h2>Food Menu</h2>
 
     <ul>
-        {% for item in items %}
-            <li>{{ item.name }} - €{{ "%.2f"|format(item.price) }}</li>
-        {% endfor %}
-    </ul>
+    {% for item in items %}
+        <li>
+            {{ item.name }} - €{{ "%.2f"|format(item.price) }}
+
+            {% if current_user.is_authenticated and current_user.role == "customer" %}
+                <form action="{{ url_for('place_order', item_id=item.id) }}" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <label>Quantity:</label>
+                    <input type="number" name="quantity" min="1" max="10" value="1" required>
+
+                    <button type="submit">Order</button>
+                </form>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
 
     <a href="{{ url_for('register') }}">Register</a>
     <a href="{{ url_for('login') }}">Login</a>
