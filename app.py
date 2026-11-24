@@ -129,5 +129,18 @@ def place_order(item_id):
     db.session.commit()
 
     return "Order placed successfully!"
+@app.route("/my-orders")
+@login_required
+def my_orders():
+    if current_user.role != "customer":
+        return "Access denied", 403
+
+    orders = db.session.execute(
+        db.select(Order, MenuItem)
+        .join(MenuItem, Order.menu_item_id == MenuItem.id)
+        .where(Order.user_id == current_user.id)
+    ).all()
+
+    return render_template("orders.html", orders=orders)
 if __name__ == "__main__":
     app.run(debug=True)

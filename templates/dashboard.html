@@ -10,7 +10,15 @@
     <h2>Login Successful!</h2>
 
     <p>Welcome! You are logged in.</p>
+{% if current_user.role == "customer" %}
+    <p>
+        <a href="{{ url_for('home') }}">View Food Menu</a>
+    </p>
 
+    <p>
+        <a href="{{ url_for('my_orders') }}">My Orders</a>
+    </p>
+{% endif %}
     <form action="{{ url_for('logout') }}" method="POST">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <button type="submit">Logout</button>

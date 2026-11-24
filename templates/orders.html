@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+</head>
+<body>
+    <h1>Restaurant Ordering System</h1>
+    <h2>My Orders</h2>
+
+    {% if orders %}
+        <table border="1">
+            <tr>
+                <th>Order ID</th>
+                <th>Food Item</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+            </tr>
+
+            {% for order, item in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>€{{ "%.2f"|format(order.total_price) }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No orders found.</p>
+    {% endif %}
+
+    <br>
+    <a href="{{ url_for('home') }}">Food Menu</a>
+    <a href="{{ url_for('dashboard') }}">Dashboard</a>
+</body>
+</html>
