@@ -38,7 +38,8 @@ def load_user(user_id):
 
 @app.route("/")
 def home():
-    return render_template("menu.html")
+    items = db.session.execute(db.select(MenuItem)).scalars().all()
+    return render_template("menu.html", items=items)
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":

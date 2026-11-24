@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Restaurant Ordering System</title>
+    <meta charset="UTF-8">
+    <title>Restaurant Menu</title>
 </head>
 <body>
-    <h1>Restaurant Ordering System</h1>
-    <hr>
 
+    <h1>Restaurant Ordering System</h1>
     <h2>Food Menu</h2>
 
     <ul>
-        <li>Burger - €5.00</li>
-        <li>Pizza - €8.00</li>
-        <li>Pasta - €7.00</li>
-        <li>Sandwich - €4.00</li>
+        {% for item in items %}
+            <li>{{ item.name }} - €{{ "%.2f"|format(item.price) }}</li>
+        {% endfor %}
     </ul>
+
+    <a href="{{ url_for('register') }}">Register</a>
+    <a href="{{ url_for('login') }}">Login</a>
 
 </body>
 </html>
