@@ -6,7 +6,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 app = Flask(__name__)
 import os
 
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "development-only-change-me")
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 csrf = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
