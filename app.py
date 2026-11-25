@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -88,7 +89,11 @@ def login():
 
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
-            return render_template("dashboard.html")
+
+            if user.role == "admin":
+                 return redirect(url_for("admin_dashboard"))
+
+        return redirect(url_for("dashboard"))
 
         return "Invalid username or password", 401
 
@@ -142,5 +147,12 @@ def my_orders():
     ).all()
 
     return render_template("orders.html", orders=orders)
+@app.route("/admin")
+@login_required
+def admin_dashboard():
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    return render_template("admin_dashboard.html")
 if __name__ == "__main__":
     app.run(debug=True)
