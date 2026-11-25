@@ -184,5 +184,16 @@ def add_item():
         return redirect(url_for("admin_dashboard"))
 
     return render_template("add_item.html")
+@app.route("/admin/manage-items")
+@login_required
+def manage_items():
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    items = db.session.execute(
+        db.select(MenuItem).order_by(MenuItem.id)
+    ).scalars().all()
+
+    return render_template("manage_items.html", items=items)
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Food Items</title>
+</head>
+<body>
+    <h1>Restaurant Ordering System</h1>
+    <h2>Manage Food Items</h2>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Food Name</th>
+            <th>Price</th>
+        </tr>
+
+        {% for item in items %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>€{{ "%.2f"|format(item.price) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <br>
+    <a href="{{ url_for('add_item') }}">Add Food Item</a>
+    <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+</body>
+</html>
