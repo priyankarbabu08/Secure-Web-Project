@@ -154,5 +154,35 @@ def admin_dashboard():
         return "Access denied", 403
 
     return render_template("admin_dashboard.html")
+@app.route("/admin/add-item", methods=["GET", "POST"])
+@login_required
+def add_item():
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        price = request.form.get("price", type=float)
+
+        if not name or len(name) > 100:
+            return "Invalid food name", 400
+
+        if price is None or not 0.01 <= price <= 1000:
+            return "Invalid price", 400
+
+        if price != round(price, 2):
+            return "Price must have a maximum of two decimal places", 400
+
+        new_item = MenuItem(
+            name=name,
+            price=round(price, 2)
+        )
+
+        db.session.add(new_item)
+        db.session.commit()
+
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("add_item.html")
 if __name__ == "__main__":
     app.run(debug=True)
