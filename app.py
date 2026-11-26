@@ -227,5 +227,27 @@ def edit_item(item_id):
         return redirect(url_for("manage_items"))
 
     return render_template("edit_item.html", item=item)
+@app.route("/admin/delete-item/<int:item_id>", methods=["POST"])
+@login_required
+def delete_item(item_id):
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    item = db.session.get(MenuItem, item_id)
+
+    if not item:
+        return "Food item not found", 404
+
+    existing_order = db.session.execute(
+        db.select(Order).filter_by(menu_item_id=item.id)
+    ).scalars().first()
+
+    if existing_order:
+        return "Cannot delete food item with existing orders", 409
+
+    db.session.delete(item)
+    db.session.commit()
+
+    return redirect(url_for("manage_items"))
 if __name__ == "__main__":
     app.run(debug=True)
