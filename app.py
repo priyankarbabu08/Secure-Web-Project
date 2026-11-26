@@ -195,5 +195,37 @@ def manage_items():
     ).scalars().all()
 
     return render_template("manage_items.html", items=items)
+@app.route("/admin/edit-item/<int:item_id>", methods=["GET", "POST"])
+@login_required
+def edit_item(item_id):
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    item = db.session.get(MenuItem, item_id)
+
+    if not item:
+        return "Food item not found", 404
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        price = request.form.get("price", type=float)
+
+        if not name or len(name) > 100:
+            return "Invalid food name", 400
+
+        if price is None or not 0.01 <= price <= 1000:
+            return "Invalid price", 400
+
+        if price != round(price, 2):
+            return "Price must have a maximum of two decimal places", 400
+
+        item.name = name
+        item.price = round(price, 2)
+
+        db.session.commit()
+
+        return redirect(url_for("manage_items"))
+
+    return render_template("edit_item.html", item=item)
 if __name__ == "__main__":
     app.run(debug=True)
