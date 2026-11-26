@@ -249,5 +249,19 @@ def delete_item(item_id):
     db.session.commit()
 
     return redirect(url_for("manage_items"))
+@app.route("/admin/orders")
+@login_required
+def admin_orders():
+    if current_user.role != "admin":
+        return "Access denied", 403
+
+    orders = db.session.execute(
+        db.select(Order, User, MenuItem)
+        .join(User, Order.user_id == User.id)
+        .join(MenuItem, Order.menu_item_id == MenuItem.id)
+        .order_by(Order.id)
+    ).all()
+
+    return render_template("admin_orders.html", orders=orders)
 if __name__ == "__main__":
     app.run(debug=True)
