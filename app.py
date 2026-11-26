@@ -47,6 +47,10 @@ def home():
     return render_template("menu.html", items=items)
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        if current_user.role == "admin":
+            return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("dashboard"))
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
