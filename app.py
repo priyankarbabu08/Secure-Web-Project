@@ -106,6 +106,9 @@ def logout():
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    if current_user.role != "customer":
+        return "Access denied", 403
+
     return render_template("dashboard.html")
 @app.route("/order/<int:item_id>", methods=["POST"])
 @login_required
